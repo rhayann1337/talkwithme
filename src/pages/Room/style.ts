@@ -13,9 +13,9 @@ export const ContainerLocal = styled.div`
   height: 100%;
   padding: 16px;
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  align-items: center;
   border-right: solid 1px #dfdfdf;
+  flex-direction: column;
 `;
 
 

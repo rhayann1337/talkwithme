@@ -22,6 +22,10 @@ const Home: React.FC = () => {
     setAutenticated(true);
   };
 
+  const handleSubmit = () => {
+    console.log("Submit");
+  };
+
   return (
     <>
       <Header />
@@ -30,8 +34,10 @@ const Home: React.FC = () => {
           {autenticated ? (
             <ContainerContent>
               <span>Talk with me!</span>
-              <input type="number" placeholder="Digite o código da sala" />
-              <Button type="submit">Entrar na sala</Button>
+              <form onSubmit={handleSubmit}>
+                <input type="number" placeholder="Digite o código da sala" />
+                <Button type="submit">Entrar na sala</Button>
+              </form>
             </ContainerContent>
           ) : (
             <ButtonLogin onClick={handleAuthUser}>

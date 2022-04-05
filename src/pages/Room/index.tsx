@@ -6,6 +6,7 @@ import {
   LocalAudioTrack,
   LocalDataTrack,
   LocalVideoTrack,
+  RemoteParticipant,
 } from "twilio-video";
 import Header from "../../components/Header";
 import VideoMenu from "../../components/VideoMenu";
@@ -16,13 +17,17 @@ import { Container, ContainerLocal, ContainerRemote } from "./style";
 export const Room: React.FC = () => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const videoRemote = useRef<HTMLDivElement>(null);
+  const [defaultUser, setDefaultUser] = useState("default");
   const { user } = useAuth();
+
   const [microphoneStatus, setMicrophoneStatus] = useState(true);
   const [cameraStatus, setCameraStatus] = useState(true);
-  const [roomName, setRoomName] = useState("123");
-  const { token } = useGetToken({ roomName, username: "teste" });
+  const [roomName, setRoomName] = useState("1234");
+  const { token } = useGetToken({ roomName, username: defaultUser });
+  console.log(user?.name);
   const [localVideoTrack, setLocalVideoTrack] = useState<LocalVideoTrack>();
   const [localAudioTrack, setLocalAudioTrack] = useState<LocalAudioTrack>();
+  const [nameRemoteParticipant, setNameRemoteParticipant] = useState("");
 
   const handleDisableMicrophone = () => {
     setMicrophoneStatus(!microphoneStatus);
@@ -33,6 +38,7 @@ export const Room: React.FC = () => {
   };
 
   const connectRoom = async () => {
+    console.log("conectou");
     const dataTrack = new LocalDataTrack();
 
     const tracks = await createLocalTracks({
@@ -66,20 +72,37 @@ export const Room: React.FC = () => {
       audioTrack.attach();
       (videoTrack as any).attach(localVideoRef.current);
 
+      const setupParticipant = (participant: RemoteParticipant) => {
+        console.log(
+          `Participant "${participant.identity}" is connected to the Room`
+        );
+
+        setNameRemoteParticipant(participant.identity);
+
+        room.on("participantConnected", (participant) =>
+          participant.on("trackSubscribed", (track) => {
+            console.log(
+              `Participant "${participant.identity}" added ${track.kind} Track ${track.sid}`
+            );
+
+            if (track.kind === "video") {
+              videoRemote.current?.appendChild(track.attach());
+            }
+
+            if (track.kind === "audio") {
+              track.attach();
+            }
+          })
+        );
+      };
+
+      room.participants.forEach((participant) => {
+        setupParticipant(participant);
+        console.log("participant", participant);
+      });
+
       room.on("participantConnected", (participant) =>
-        participant.on("trackSubscribed", (track) => {
-          console.log(
-            `Participant "${participant.identity}" added ${track.kind} Track ${track.sid}`
-          );
-
-          if (track.kind === "video") {
-            videoRemote.current?.appendChild(track.attach());
-          }
-
-          if (track.kind === "audio") {
-            track.attach();
-          }
-        })
+        setupParticipant(participant)
       );
     } catch (error: any) {
       console.error(`Unable to connect to Room: ${error.message}`);
@@ -87,9 +110,12 @@ export const Room: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!user) return;
+    setDefaultUser(user.name);
+
     connectRoom();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   return (
     <>
@@ -108,7 +134,7 @@ export const Room: React.FC = () => {
           />
         </ContainerLocal>
         <ContainerRemote>
-          <Typography variant="h6">Remote Video</Typography>
+          <Typography variant="h6">{nameRemoteParticipant}</Typography>
           <div ref={videoRemote} />
         </ContainerRemote>
       </Container>

@@ -24,7 +24,6 @@ export const Room: React.FC = () => {
   const [cameraStatus, setCameraStatus] = useState(true);
   const [roomName, setRoomName] = useState("1234");
   const { token } = useGetToken({ roomName, username: defaultUser });
-  console.log(user?.name);
   const [localVideoTrack, setLocalVideoTrack] = useState<LocalVideoTrack>();
   const [localAudioTrack, setLocalAudioTrack] = useState<LocalAudioTrack>();
   const [nameRemoteParticipant, setNameRemoteParticipant] = useState("");
@@ -38,9 +37,6 @@ export const Room: React.FC = () => {
   };
 
   const connectRoom = async () => {
-    console.log("conectou");
-    const dataTrack = new LocalDataTrack();
-
     const tracks = await createLocalTracks({
       audio: true,
       video: true,
@@ -64,27 +60,14 @@ export const Room: React.FC = () => {
 
       if (!videoTrack) return;
 
-      const localParticipant = room.localParticipant;
-      console.log(
-        `Connected to the Room as LocalParticipant "${localParticipant.identity}"`
-      );
-
       audioTrack.attach();
       (videoTrack as any).attach(localVideoRef.current);
 
       const setupParticipant = (participant: RemoteParticipant) => {
-        console.log(
-          `Participant "${participant.identity}" is connected to the Room`
-        );
-
         setNameRemoteParticipant(participant.identity);
 
         room.on("participantConnected", (participant) =>
           participant.on("trackSubscribed", (track) => {
-            console.log(
-              `Participant "${participant.identity}" added ${track.kind} Track ${track.sid}`
-            );
-
             if (track.kind === "video") {
               videoRemote.current?.appendChild(track.attach());
             }
@@ -98,14 +81,13 @@ export const Room: React.FC = () => {
 
       room.participants.forEach((participant) => {
         setupParticipant(participant);
-        console.log("participant", participant);
       });
 
       room.on("participantConnected", (participant) =>
         setupParticipant(participant)
       );
     } catch (error: any) {
-      console.error(`Unable to connect to Room: ${error.message}`);
+      console.error(`${error.message}`);
     }
   };
 

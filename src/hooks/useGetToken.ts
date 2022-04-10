@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 interface useGetTokenArgs {
-  roomName: string;
+  roomCode: string;
   username: string;
 }
 
@@ -10,7 +10,7 @@ type UseGetToken = (args: useGetTokenArgs) => {
   token?: string;
 };
 
-export const useGetToken: UseGetToken = ({ roomName, username }) => {
+export const useGetToken: UseGetToken = ({ roomCode, username }) => {
   const [token, setToken] = useState();
 
   useEffect(() => {
@@ -20,13 +20,13 @@ export const useGetToken: UseGetToken = ({ roomName, username }) => {
       } = await axios.get("http://localhost:8081/token", {
         params: {
           identity: username,
-          room: roomName,
+          room: roomCode,
         },
       });
       setToken(token);
     };
     loadData();
-  }, [roomName, token, username]);
+  }, [roomCode, token, username]);
 
   return { token };
 };

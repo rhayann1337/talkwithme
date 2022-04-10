@@ -18,13 +18,12 @@ export const ContainerLocal = styled.div`
   flex-direction: column;
 `;
 
-
 export const ContainerRemote = styled.div`
-width: 50%;
+  flex-direction: column;
+  width: 50%;
   height: 100%;
   padding: 16px;
   display: flex;
   align-items: flex-start;
-  justify-content: center;
   border-right: solid 1px #dfdfdf;
 `;

@@ -52,10 +52,13 @@ const Home: React.FC = () => {
               </form>
             </ContainerContent>
           ) : (
-            <ButtonLogin onClick={handleAuthUser}>
-              <img src={googleImg} alt="Google" />
-              Realize seu login com a sua conta Google.
-            </ButtonLogin>
+            <>
+              <span>Talk with me!</span>
+              <ButtonLogin onClick={handleAuthUser}>
+                <img src={googleImg} alt="Google" />
+                Realize seu login com a sua conta Google.
+              </ButtonLogin>
+            </>
           )}
         </ContainerCenter>
       </Container>

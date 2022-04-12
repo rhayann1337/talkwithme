@@ -1,6 +1,7 @@
 import { Typography } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import {
   connect,
   Room as TwilioRoom,
@@ -14,12 +15,15 @@ import VideoMenu from "../../components/VideoMenu";
 import { useAuth } from "../../hooks/useAuth";
 import { useGetToken } from "../../hooks/useGetToken";
 import { Container, ContainerLocal, ContainerRemote } from "./style";
-
+import "react-toastify/dist/ReactToastify.min.css";
+import { useNotifications } from "../../hooks/useNotifications";
+import Image from "../../assets/avatar_disabled.jpg";
 interface RoomState {
   roomCode: string;
 }
 
 export const Room: React.FC = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as RoomState;
   const { roomCode } = state;
@@ -30,9 +34,21 @@ export const Room: React.FC = () => {
   const [microphoneStatus, setMicrophoneStatus] = useState(true);
   const [cameraStatus, setCameraStatus] = useState(true);
   const { token } = useGetToken({ roomCode, username: defaultUser });
-
   const [nameRemoteParticipant, setNameRemoteParticipant] = useState("");
   const [mainRoom, setMainRoom] = useState<TwilioRoom>();
+  const [remoteVideoStatus, setRemoteVideoStatus] = useState(true);
+  const {
+    handleShowCameraDisabled,
+    handleShowCameraEnabled,
+    handleShowConnectionSucess,
+    handleShowMicrophoneDisabled,
+    handleShowMicrophoneEnabled,
+    handleShowParticipantConnected,
+    handleShowParticipantDisabledAudio,
+    handleShowParticipantDisabledVideo,
+    handleShowParticipantEnabledAudio,
+    handleShowParticipantEnabledVideo,
+  } = useNotifications();
 
   const connectRoom = async (token: string) => {
     const tracks = await createLocalTracks({
@@ -52,7 +68,6 @@ export const Room: React.FC = () => {
       const room = await connect(token, {
         tracks,
       });
-      console.log("conectou");
 
       setMainRoom(room);
 
@@ -60,21 +75,42 @@ export const Room: React.FC = () => {
 
       audioTrack.attach();
       (videoTrack as any).attach(localVideoRef.current);
+      handleShowConnectionSucess();
 
       const publishRemoteParticipantDevices = (
         participant: RemoteParticipant
       ) => {
         setNameRemoteParticipant(participant.identity);
+        handleShowParticipantConnected(participant.identity);
 
         participant.on("trackSubscribed", (track) => {
           if (track.kind === "video") {
             videoRemote.current?.appendChild(track.attach());
-            console.log("publicou video");
           }
 
           if (track.kind === "audio") {
             track.attach();
           }
+
+          track.on("disabled", () => {
+            if (track.kind === "video") {
+              setRemoteVideoStatus(false);
+              return handleShowParticipantDisabledVideo(participant.identity);
+            }
+            if (track.kind === "audio") {
+              return handleShowParticipantDisabledAudio(participant.identity);
+            }
+          });
+
+          track.on("enabled", () => {
+            if (track.kind === "video") {
+              setRemoteVideoStatus(true);
+              return handleShowParticipantEnabledVideo(participant.identity);
+            }
+            if (track.kind === "audio") {
+              return handleShowParticipantEnabledAudio(participant.identity);
+            }
+          });
         });
       };
 
@@ -95,27 +131,59 @@ export const Room: React.FC = () => {
       const audio = track.track;
       audio.enable(!microphoneStatus);
       setMicrophoneStatus(!microphoneStatus);
+      if (!microphoneStatus) {
+        handleShowMicrophoneEnabled();
+        return;
+      }
+      handleShowMicrophoneDisabled();
     });
-  }, [microphoneStatus, mainRoom?.localParticipant.audioTracks]);
+  }, [
+    mainRoom?.localParticipant.audioTracks,
+    microphoneStatus,
+    handleShowMicrophoneDisabled,
+    handleShowMicrophoneEnabled,
+  ]);
 
   const handleDisableCamera = useCallback(() => {
     mainRoom?.localParticipant.videoTracks.forEach((track) => {
       const video = track.track;
       video.enable(!cameraStatus);
       setCameraStatus(!cameraStatus);
+      if (!cameraStatus) {
+        handleShowCameraEnabled();
+        return;
+      }
+      handleShowCameraDisabled();
     });
-  }, [cameraStatus, mainRoom?.localParticipant.videoTracks]);
+  }, [
+    cameraStatus,
+    handleShowCameraDisabled,
+    handleShowCameraEnabled,
+    mainRoom?.localParticipant.videoTracks,
+  ]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) return navigate("/");
     setDefaultUser(user.name);
 
     if (!token) return;
     connectRoom(token);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, user]);
 
   return (
     <>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Header roomCode={roomCode} />
       <Container>
         <ContainerLocal>
@@ -130,9 +198,15 @@ export const Room: React.FC = () => {
             videoStatus={cameraStatus}
           />
         </ContainerLocal>
-        <ContainerRemote>
+        <ContainerRemote isActiveVideo={remoteVideoStatus}>
           <Typography variant="h6">{nameRemoteParticipant}</Typography>
-          <div ref={videoRemote} />
+          {remoteVideoStatus ? (
+            <div ref={videoRemote} />
+          ) : (
+            <div>
+              <img src={Image} alt="Video disabled" />
+            </div>
+          )}
         </ContainerRemote>
       </Container>
     </>

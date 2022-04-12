@@ -10,6 +10,7 @@ export const Container = styled.div`
   justify-content: center;
   overflow: hidden;
   background-image: url(${background});
+  background-size: 100%;
 `;
 
 export const ContainerCenter = styled.div`

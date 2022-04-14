@@ -1,19 +1,18 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
-  boxStyle,
   ContainerButtons,
   ContainerContent,
   ContainerHeader,
   ContainerImage,
-  ContainerModal,
   TitleHeader,
 } from "./style";
 import Image from "../../assets/icon.png";
 import PhoneImage from "../../assets/phone-icon.svg";
 import { useAuth } from "../../hooks/useAuth";
-import { Avatar, Box, Button, Menu, MenuItem, Typography } from "@mui/material";
+import { Avatar, Button, Menu, MenuItem } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import { useNavigate } from "react-router-dom";
+import ModalSignOut from "../ModalSignOut";
 
 const Header: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -81,27 +80,7 @@ const Header: React.FC = () => {
         </ContainerContent>
       </ContainerHeader>
       <Modal open={visibleModal} onClose={handleClose}>
-        <Box sx={boxStyle}>
-          <Typography
-            variant="h6"
-            component="h2"
-            sx={{ marginBottom: "8px", width: "100%" }}
-          >
-            Do you want sign out?
-          </Typography>
-          <ContainerModal>
-            <Button
-              onClick={handleClose}
-              variant="contained"
-              sx={{ marginX: "16px" }}
-            >
-              Cancel
-            </Button>
-            <Button onClick={handleSignOut} variant="outlined">
-              Sign out
-            </Button>
-          </ContainerModal>
-        </Box>
+        <ModalSignOut handleClose={handleClose} handleSignOut={handleSignOut} />
       </Modal>
     </>
   );

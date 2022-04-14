@@ -3,13 +3,14 @@ import {
   ButtonLogin,
   Container,
   ContainerCenter,
+  ContainerCenterAutenticated,
   ContainerContent,
 } from "./style";
 import googleImg from "../../assets/google-icon.svg";
 import Header from "../../components/Header";
 import { useAuth } from "../../hooks/useAuth";
-import { Button } from "../../components/Button";
 import { useNavigate } from "react-router-dom";
+import { TextField } from "@mui/material";
 
 const Home: React.FC = () => {
   const { user, signInWithGoogle } = useAuth();
@@ -39,24 +40,25 @@ const Home: React.FC = () => {
       <Container>
         <ContainerCenter>
           {autenticated ? (
-            <ContainerContent>
-              <span>Talk with me!</span>
-              <form onSubmit={handleSubmit}>
-                <input
-                  type="number"
-                  onChange={(event) => setRoomCode(event.target.value)}
-                  value={roomCode}
-                  placeholder="Digite o código da sala"
-                />
-                <Button type="submit">Entrar na sala</Button>
-              </form>
-            </ContainerContent>
+            <ContainerCenterAutenticated>
+              <ContainerContent>
+                <form onSubmit={handleSubmit}>
+                  <TextField
+                    id="standard-basic"
+                    label="Put room code"
+                    variant="standard"
+                    required
+                    onChange={(event) => setRoomCode(event.target.value)}
+                    value={roomCode}
+                  />
+                </form>
+              </ContainerContent>
+            </ContainerCenterAutenticated>
           ) : (
             <>
-              <span>Talk with me!</span>
               <ButtonLogin onClick={handleAuthUser}>
                 <img src={googleImg} alt="Google" />
-                Realize seu login com a sua conta Google.
+                Clique para realizar seu login com a sua conta Google.
               </ButtonLogin>
             </>
           )}

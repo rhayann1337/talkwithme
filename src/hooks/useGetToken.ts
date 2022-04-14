@@ -14,7 +14,7 @@ export const useGetToken: UseGetToken = ({ roomCode, username }) => {
   const [token, setToken] = useState();
 
   useEffect(() => {
-    const loadData = async () => {
+    const getToken = async () => {
       const {
         data: { token },
       } = await axios.get("https://talkwithme-api-twilio.herokuapp.com/token", {
@@ -25,7 +25,7 @@ export const useGetToken: UseGetToken = ({ roomCode, username }) => {
       });
       setToken(token);
     };
-    loadData();
+    getToken();
   }, [roomCode, token, username]);
 
   return { token };

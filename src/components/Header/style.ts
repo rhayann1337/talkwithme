@@ -23,12 +23,42 @@ export const ContainerContent = styled.div`
 `;
 
 export const ContainerButtons = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
   img {
     height: 30px;
     width: 30px;
     cursor: pointer;
-    margin-right: 100px;
+    border-radius: 16px;
+    margin-left: 4px;
+    margin-right: 8px;
   }
+`;
+
+export const boxStyle = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 250,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexDirection: "column",
+  borderRadius: "8px",
+};
+
+export const ContainerModal = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: row;
 `;
 
 export const ContainerImage = styled.div`

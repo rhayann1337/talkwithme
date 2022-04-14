@@ -14,10 +14,16 @@ import Header from "../../components/Header";
 import VideoMenu from "../../components/VideoMenu";
 import { useAuth } from "../../hooks/useAuth";
 import { useGetToken } from "../../hooks/useGetToken";
-import { Container, ContainerLocal, ContainerRemote } from "./style";
+import {
+  Container,
+  ContainerLoading,
+  ContainerLocal,
+  ContainerRemote,
+} from "./style";
 import "react-toastify/dist/ReactToastify.min.css";
 import { useNotifications } from "../../hooks/useNotifications";
 import Image from "../../assets/avatar_disabled.jpg";
+import { Spinner } from "theme-ui";
 interface RoomState {
   roomCode: string;
 }
@@ -37,6 +43,7 @@ export const Room: React.FC = () => {
   const [nameRemoteParticipant, setNameRemoteParticipant] = useState("");
   const [mainRoom, setMainRoom] = useState<TwilioRoom>();
   const [remoteVideoStatus, setRemoteVideoStatus] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const {
     handleShowCameraDisabled,
     handleShowCameraEnabled,
@@ -75,6 +82,7 @@ export const Room: React.FC = () => {
 
       audioTrack.attach();
       (videoTrack as any).attach(localVideoRef.current);
+      setIsLoading(false);
       handleShowConnectionSucess();
 
       const publishRemoteParticipantDevices = (
@@ -171,6 +179,16 @@ export const Room: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, user]);
 
+  if (isLoading)
+    return (
+      <>
+        <Header />
+        <ContainerLoading>
+          <Spinner />
+        </ContainerLoading>
+      </>
+    );
+
   return (
     <>
       <ToastContainer
@@ -184,7 +202,7 @@ export const Room: React.FC = () => {
         draggable
         pauseOnHover
       />
-      <Header roomCode={roomCode} />
+      <Header />
       <Container>
         <ContainerLocal>
           <Typography variant="h6" sx={{ alignItems: "flex-start" }}>

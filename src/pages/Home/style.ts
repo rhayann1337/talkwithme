@@ -14,14 +14,23 @@ export const Container = styled.div`
 `;
 
 export const ContainerCenter = styled.div`
-  border: 1px solid #dfdfdf;
-  border-radius: 16px;
-  padding: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+
+  span {
+    font: 400 16px "Roboto", sans-serif;
+  }
+`;
+
+export const ContainerCenterAutenticated = styled.div`
   background-color: white;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 
   span {
     font: 400 16px "Roboto", sans-serif;

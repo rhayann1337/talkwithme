@@ -9,6 +9,7 @@ import {
   LocalAudioTrack,
   LocalVideoTrack,
   RemoteParticipant,
+  Participant,
 } from "twilio-video";
 import Header from "../../components/Header";
 import VideoMenu from "../../components/VideoMenu";
@@ -24,6 +25,7 @@ import "react-toastify/dist/ReactToastify.min.css";
 import { useNotifications } from "../../hooks/useNotifications";
 import Image from "../../assets/avatar_disabled.jpg";
 import { Spinner } from "theme-ui";
+import NetworkQualityLevel from "../../components/NetworkQuality";
 interface RoomState {
   roomCode: string;
 }
@@ -44,6 +46,7 @@ export const Room: React.FC = () => {
   const [mainRoom, setMainRoom] = useState<TwilioRoom>();
   const [remoteVideoStatus, setRemoteVideoStatus] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [remoteParticipant, setRemoteParticipant] = useState<Participant>();
   const {
     handleShowCameraDisabled,
     handleShowCameraEnabled,
@@ -74,6 +77,10 @@ export const Room: React.FC = () => {
       if (!token) return window.alert("Erro de conexão, token inválido!");
       const room = await connect(token, {
         tracks,
+        networkQuality: {
+          local: 2,
+          remote: 2,
+        },
       });
 
       setMainRoom(room);
@@ -90,6 +97,8 @@ export const Room: React.FC = () => {
       ) => {
         setNameRemoteParticipant(participant.identity);
         handleShowParticipantConnected(participant.identity);
+
+        setRemoteParticipant(participant);
 
         participant.on("trackSubscribed", (track) => {
           if (track.kind === "video") {
@@ -203,6 +212,9 @@ export const Room: React.FC = () => {
         pauseOnHover
       />
       <Header />
+      {remoteParticipant && (
+        <NetworkQualityLevel participant={remoteParticipant} />
+      )}
       <Container>
         <ContainerLocal>
           <Typography variant="h6" sx={{ alignItems: "flex-start" }}>

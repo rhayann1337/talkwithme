@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { Participant } from "twilio-video";
 
-export default function useParticipantNetworkQualityLevel(
-  participant: Participant
-) {
+export const useParticipantNetworkQualityLevel = (participant: Participant) => {
   const [networkQualityLevel, setNetworkQualityLevel] = useState(
     participant.networkQualityLevel
   );
@@ -33,10 +31,10 @@ export default function useParticipantNetworkQualityLevel(
         setColor("yellow");
         break;
       case 4:
-        setColor("green");
+        setColor("lawngreen");
         break;
       case 5:
-        setColor("green");
+        setColor("lawngreen");
         break;
       default:
         setColor("white");
@@ -52,4 +50,4 @@ export default function useParticipantNetworkQualityLevel(
   }, [networkQualityLevel, participant]);
 
   return { networkQualityLevel, color };
-}
+};

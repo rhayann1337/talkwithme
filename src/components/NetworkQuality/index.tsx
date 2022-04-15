@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import useParticipantNetworkQualityLevel from "../../hooks/useParticipantNetworkQuality";
 import { Participant } from "twilio-video";
+import { useParticipantNetworkQualityLevel } from "../../hooks/useParticipantNetworkQuality";
 
 const useStyles = makeStyles({
   outerContainer: {
-    width: "16px",
-    height: "16px",
+    width: "12px",
+    height: "12px",
     padding: "8px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    background: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     borderRadius: "16px",
   },
   innerContainer: {

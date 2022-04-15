@@ -10,7 +10,7 @@ import googleImg from "../../assets/google-icon.svg";
 import Header from "../../components/Header";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { TextField } from "@mui/material";
+import { TextField, Typography, Button } from "@mui/material";
 
 const Home: React.FC = () => {
   const { user, signInWithGoogle } = useAuth();
@@ -34,6 +34,10 @@ const Home: React.FC = () => {
     navigate("/room", { state: { roomCode: roomCode } });
   };
 
+  const handleRedirectToRoomList = () => {
+    navigate("/rooms");
+  };
+
   return (
     <>
       <Header />
@@ -42,16 +46,22 @@ const Home: React.FC = () => {
           {autenticated ? (
             <ContainerCenterAutenticated>
               <ContainerContent>
+                <Typography>Put room code to join or create room</Typography>
                 <form onSubmit={handleSubmit}>
                   <TextField
                     id="standard-basic"
-                    label="Put room code"
                     variant="standard"
                     required
                     onChange={(event) => setRoomCode(event.target.value)}
                     value={roomCode}
                   />
                 </form>
+                <Typography sx={{ marginTop: "16px", marginBottom: "16px" }}>
+                  If you prefer, you can see room list already created.
+                </Typography>
+                <Button variant="contained" onClick={handleRedirectToRoomList}>
+                  Room list
+                </Button>
               </ContainerContent>
             </ContainerCenterAutenticated>
           ) : (

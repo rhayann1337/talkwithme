@@ -38,9 +38,10 @@ export const ContainerCenterAutenticated = styled.div`
 `;
 
 export const ContainerContent = styled.div`
-  padding: 8px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
+  align-items: center;
 
   input[type="number"] {
     border: none;

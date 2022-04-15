@@ -33,6 +33,12 @@ export const ContainerLoading = styled.div`
   justify-content: center;
 `;
 
+export const ContainerRemoteData = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+`;
 interface ContainerRemoteProps {
   isActiveVideo?: boolean;
 }

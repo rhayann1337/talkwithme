@@ -20,6 +20,7 @@ import {
   ContainerLoading,
   ContainerLocal,
   ContainerRemote,
+  ContainerRemoteData,
 } from "./style";
 import "react-toastify/dist/ReactToastify.min.css";
 import { useNotifications } from "../../hooks/useNotifications";
@@ -212,9 +213,7 @@ export const Room: React.FC = () => {
         pauseOnHover
       />
       <Header />
-      {remoteParticipant && (
-        <NetworkQualityLevel participant={remoteParticipant} />
-      )}
+
       <Container>
         <ContainerLocal>
           <Typography variant="h6" sx={{ alignItems: "flex-start" }}>
@@ -228,16 +227,23 @@ export const Room: React.FC = () => {
             videoStatus={cameraStatus}
           />
         </ContainerLocal>
-        <ContainerRemote isActiveVideo={remoteVideoStatus}>
-          <Typography variant="h6">{nameRemoteParticipant}</Typography>
-          {remoteVideoStatus ? (
-            <div ref={videoRemote} />
-          ) : (
-            <div>
-              <img src={Image} alt="Video disabled" />
-            </div>
-          )}
-        </ContainerRemote>
+        {remoteParticipant && (
+          <ContainerRemote isActiveVideo={remoteVideoStatus}>
+            <ContainerRemoteData>
+              <Typography variant="h6" sx={{ marginRight: "8px" }}>
+                {nameRemoteParticipant}
+              </Typography>
+              <NetworkQualityLevel participant={remoteParticipant} />
+            </ContainerRemoteData>
+            {remoteVideoStatus ? (
+              <div ref={videoRemote} />
+            ) : (
+              <div>
+                <img src={Image} alt="Video disabled" />
+              </div>
+            )}
+          </ContainerRemote>
+        )}
       </Container>
     </>
   );

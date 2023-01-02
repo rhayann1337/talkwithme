@@ -9,7 +9,7 @@
 
 <div id="techs"></div>
 
-## ✨ technologies
+## ✨ Technologies
 
 This project was developed with the following technologies:
 

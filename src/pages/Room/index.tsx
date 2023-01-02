@@ -86,11 +86,15 @@ export const Room: React.FC = () => {
 
       setMainRoom(room);
 
+      if(room) {
+        setIsLoading(false);
+      }
+
       if (!videoTrack) return;
 
       audioTrack.attach();
       (videoTrack as any).attach(localVideoRef.current);
-      setIsLoading(false);
+      
       handleShowConnectionSucess();
 
       const publishRemoteParticipantDevices = (
@@ -132,6 +136,7 @@ export const Room: React.FC = () => {
         });
       };
 
+     
       room.participants.forEach((participant) => {
         publishRemoteParticipantDevices(participant);
       });
@@ -139,6 +144,8 @@ export const Room: React.FC = () => {
       room.on("participantConnected", (participant) =>
         publishRemoteParticipantDevices(participant)
       );
+
+
     } catch (error: any) {
       console.error(`${error.message}`);
     }
@@ -236,7 +243,7 @@ export const Room: React.FC = () => {
               <NetworkQualityLevel participant={remoteParticipant} />
             </ContainerRemoteData>
             {remoteVideoStatus ? (
-              <div ref={videoRemote} />
+              <div ref={videoRemote} className="remoteVideoDiv" />
             ) : (
               <div>
                 <img src={Image} alt="Video disabled" />

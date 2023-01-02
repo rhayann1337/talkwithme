@@ -17,7 +17,7 @@ export const useGetToken: UseGetToken = ({ roomCode, username }) => {
     const getToken = async () => {
       const {
         data: { token },
-      } = await axios.get("https://talkwithme-api-twilio.herokuapp.com/token", {
+      } = await axios.get("http://localhost:8081/token", {
         params: {
           identity: username,
           room: roomCode,

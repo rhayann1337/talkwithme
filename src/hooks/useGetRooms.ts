@@ -13,7 +13,7 @@ export const useGetRooms = () => {
   useEffect(() => {
     const getRooms = async () => {
       const { data } = await axios.get(
-        "https://talkwithme-api-twilio.herokuapp.com/list"
+        "http://localhost:8081/list"
       );
       setRoomList(data);
     };

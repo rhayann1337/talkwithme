@@ -21,6 +21,7 @@ export const ContainerLocal = styled.div`
 
   video {
     margin-bottom: 16px;
+    max-width: 100%;
   }
 `;
 
@@ -69,5 +70,14 @@ export const ContainerRemote = styled.div<ContainerRemoteProps>`
   img {
     width: 640px;
     height: 480px;
+    max-width: 100%;
+  }
+
+  video {
+    max-width: 100%;
+  }
+
+  .remoteVideoDiv {
+    max-width: 100%;
   }
 `;
